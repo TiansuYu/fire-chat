@@ -1,0 +1,48 @@
+[project]
+name = "llm-cli"
+version = "0.0.1"
+authors = [
+    { name = "Marco Lardera", email = "larderamarco@hotmail.com" },
+    { name = "Tadeas Fort", email = "business@tadeasfort.com" },
+    { name = "Tiansu Yu", email = "tiansu.yu@icloud.com" },
+]
+license = "Apache-2.0"
+description = "A CLI tool to chat with LLM models including GPT and Claude."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Development Status :: 2 - Pre-Alpha",
+    "Natural Language :: English",
+]
+urls = [
+    { name = "Homepage", url = "https://github.com/TiansuYu/llm-cli"},
+    { name = "Bug Tracker", url = "https://github.com/TiansuYu/llm-cli/issues"},
+]
+dependencies = [
+    "importlib-metadata>=8.2.0",
+    "litellm>=1.44.5",
+    "prompt-toolkit>=3.0.47",
+    "pyyaml>=6.0.2",
+    "rich>=13.7.1",
+    "typing-extensions>=4.12.2",
+    "xdg-base-dirs>=6.0.1",
+    "hydra-core>=1.3.2",
+    "pydantic>=2.8.2",
+    "pydantic-collections>=0.6.0",
+    "fsspec>=2024.6.1",
+]
+
+[tool.uv]
+dev-dependencies = ["pre-commit"]
+[project.scripts]
+llm-cli = "llm_cli.main:main"
+
+
+[tool.ruff]
+line-length = 120
