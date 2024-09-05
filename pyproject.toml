@@ -6,10 +6,15 @@ authors = [
     { name = "Tadeas Fort", email = "business@tadeasfort.com" },
     { name = "Tiansu Yu", email = "tiansu.yu@icloud.com" },
 ]
-license = "Apache-2.0"
+maintainers = [
+    { name = "Tiansu Yu", email = "tiansu.yu@icloud.com" },
+    { name = "Tadeas Fort", email = "business@tadeasfort.com" },
+]
+license = { name = "Apache-2.0", file = "LICENSE" }
 description = "A CLI tool to chat with LLM models including GPT and Claude."
 readme = "README.md"
 requires-python = ">=3.10"
+keywords = ["LLM", "cli", "chatGPT", "claude", "openai", "anthropic"]
 classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -19,10 +24,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Development Status :: 2 - Pre-Alpha",
     "Natural Language :: English",
-]
-urls = [
-    { name = "Homepage", url = "https://github.com/TiansuYu/llm-cli"},
-    { name = "Bug Tracker", url = "https://github.com/TiansuYu/llm-cli/issues"},
 ]
 dependencies = [
     "importlib-metadata>=8.2.0",
@@ -38,11 +39,21 @@ dependencies = [
     "fsspec>=2024.6.1",
 ]
 
+
 [tool.uv]
 dev-dependencies = ["pre-commit"]
+
+[project.urls]
+Homepage = "https://github.com/TiansuYu/llm-cli"
+Issues = "https://github.com/TiansuYu/llm-cli/issues"
+Repository = "https://github.com/TiansuYu/llm-cli"
+
 [project.scripts]
 llm-cli = "llm_cli.main:main"
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 120

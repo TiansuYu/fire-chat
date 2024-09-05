@@ -47,13 +47,13 @@ Only in testing phase, not published yet!
 3. **Run the CLI**:
 
     ```shell
-    uv run src/llm_cli/main.py
+    uv run llm-cli
     ```
 
    or run with arguments (overriding config yaml file)
 
     ```shell
-    uv run src/llm_cli/main.py model=gpt-4o
+    uv run llm-cli model=claude-3-5-sonnet-20240620 temperature=0.1
    ```
 
    for full list of configs, see [config.py](src/llm_cli/config.py).

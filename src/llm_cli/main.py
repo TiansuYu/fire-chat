@@ -4,13 +4,15 @@ import hydra
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig
 from prompt_toolkit import PromptSession
+from prompt_toolkit.key_binding.key_bindings import key_binding
 from rich.text import Text
 
 from llm_cli.chat import LLMChat
 from llm_cli.config import Config
 from llm_cli.constants import CONFIG_FILE
 from llm_cli.history import History
-from llm_cli.ui import PROMPT_STYLE, console, ConsoleStyle
+from llm_cli.message import Messages
+from llm_cli.ui import PROMPT_STYLE, console, ConsoleStyle, create_keybindings
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -52,10 +54,9 @@ bootstrap_config_file()
 def main(cfg: DictConfig) -> None:
     with Config.from_omega_conf(cfg) as config:
         try:
-            history = History.load(config.history.load_from)
-            session = PromptSession()
+            session = PromptSession(key_bindings=create_keybindings(config.multiline))
             print_header(config)
-            chat = LLMChat(config=config, messages=history.messages)
+            chat = LLMChat(config=config, history=History.load(config.history.load_from))
             index = 1
             while True:
                 prompt = session.prompt(f"user [{index}]: ", style=PROMPT_STYLE)
@@ -67,10 +68,9 @@ def main(cfg: DictConfig) -> None:
         finally:
             if config.budget.is_on:
                 config.budget.display_expense()
-            if config.history.save:
-                history.save()
-            elif isinstance(config.history.save, str):
-                history.save(config.history.save)
+            if save := config.history.save:
+                save_to = None if isinstance(save, bool) else save
+                chat.history.save(save_to)
 
 
 if __name__ == "__main__":
