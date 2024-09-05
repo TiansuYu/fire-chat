@@ -551,7 +551,7 @@ wheels = [
 [[package]]
 name = "llm-cli"
 version = "0.0.1"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "fsspec" },
     { name = "hydra-core" },

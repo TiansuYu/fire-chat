@@ -31,7 +31,7 @@ After the changes are done don't forget to:
 - update `README.md` if necessary
 - update `pyproject.toml` with a new version number
 
-- test if the installation as a package still works as expected using `pdm install .` and running `llm-cli`
+- test if the installation as a package still works as expected using `uv install .` and running `llm-cli`
 
 ### Formatting
 

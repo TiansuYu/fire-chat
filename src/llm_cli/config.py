@@ -12,7 +12,7 @@ from typing_extensions import Annotated
 from typing_extensions import Self
 
 from llm_cli.budget import Budget
-from llm_cli.constants import CONFIG_FILE
+from llm_cli.constants import CONFIG_FILE, DEFAULT_MODEL
 from llm_cli.str_enum import StrEnum
 from llm_cli.ui import console
 from llm_cli.ui.console import ConsoleStyle
@@ -45,7 +45,7 @@ class StorageFormat(StrEnum):
 
 @dataclass(config=ConfigDict(validate_default=True))
 class Provider:
-    api_key: str = field(default="dummy")
+    api_key: str = field(default="dummy api key")
     name: str = field(default="openai")
     proxy_url: str | None = field(default=None)
 
@@ -100,7 +100,7 @@ class HistoryConf:
 @dataclass
 class Config:
     providers: list[Provider] = field(default_factory=lambda: [Provider()])
-    model: Model = field(default="gpt-4o")
+    model: Model = field(default=DEFAULT_MODEL)
     temperature: float = 0.2
     markdown: bool = True
     easy_copy: bool = True

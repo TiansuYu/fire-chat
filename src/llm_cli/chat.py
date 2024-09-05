@@ -1,8 +1,9 @@
 import litellm
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from rich.markdown import Markdown
 
 from llm_cli.config import Config
+from llm_cli.history import History
 from llm_cli.message import Messages, Message
 
 SYSTEM_PROMPT = "Always use code blocks with the appropriate language tags. If asked for a table always format it using Markdown syntax."
@@ -13,7 +14,20 @@ SYSTEM_MESSAGE = Message(role="system", content=SYSTEM_PROMPT)
 class LLMChat(BaseModel):
     config: Config
     messages: Messages = Messages()
+    history: History | None = None
     system_message: Message = SYSTEM_MESSAGE
+
+    @model_validator(mode="after")
+    def load_history(self):
+        """
+        If no history is loaded or history has a different model, starts a new history session.
+        Otherwise, load messages from history.
+        """
+        if self.history is None or self.history.model != self.config.model:
+            # start a new history
+            self.history = History(model=self.config.model)
+        else:
+            self.messages.extend(self.history.messages)
 
     def completion(self, message: Message | str = None, markdown: bool = True) -> Markdown | str:
         message = Message(role="user", content=message) if isinstance(message, str) else message
@@ -43,3 +57,8 @@ class LLMChat(BaseModel):
         resp_message = Message.model_validate(response.choices[0]["message"].model_dump())
         self.messages.append(resp_message)
         return Markdown(resp_message.content) if markdown else resp_message.content
+
+    def save_history(self, path: str | None = None) -> None:
+        if self.history is not None:
+            self.history.messages.extend(self.messages)
+            self.history.save(path)
