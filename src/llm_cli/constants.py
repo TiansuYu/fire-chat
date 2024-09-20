@@ -5,7 +5,8 @@ PROJECT_NAME = "llm-cli"
 
 CONFIG_DIR = Path.home() / ".config" / "llm-cli"
 CONFIG_FILE = CONFIG_DIR / "config.yaml"
-DEFAULT_MODEL = "gpt-4o"
+
+
 
 if not CONFIG_DIR.exists():
     CONFIG_DIR.mkdir(parents=True)

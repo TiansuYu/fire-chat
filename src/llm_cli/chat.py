@@ -6,7 +6,8 @@ from llm_cli.config import Config
 from llm_cli.history import History
 from llm_cli.message import Messages, Message
 
-SYSTEM_PROMPT = "Always use code blocks with the appropriate language tags. If asked for a table always format it using Markdown syntax."
+SYSTEM_PROMPT = ("Always use code blocks with the appropriate language tags. "
+                 "If asked for a table always format it using Markdown syntax.")
 
 SYSTEM_MESSAGE = Message(role="system", content=SYSTEM_PROMPT)
 
@@ -39,10 +40,9 @@ class LLMChat(BaseModel):
             model=self.config.model,
             api_key=self.config.get_api_key(),
             temperature=self.config.temperature,
-            messages=self.messages.model_dump(),
+            messages=self.messages.model_dump(),  # noqa
             base_url=self.config.suitable_provider.proxy_url if self.config.suitable_provider.proxy_url else None,
         )
-        # logger.debug(f"Received response: {response.model_dump()}")
 
         # validate at least one choice exists
         if not response.choices:
