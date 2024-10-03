@@ -16,8 +16,7 @@ HISTORY_DIR = CONFIG_DIR / "session_history"
 logger = logging.getLogger(__name__)
 
 
-
-class History(BaseModel, validate_default=True, validate_assignment=True):
+class History(BaseModel, validate_default=True):
     model: Model
     messages: Messages = Messages()
     timestamp: datetime = Field(default_factory=datetime.now)

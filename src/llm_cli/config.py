@@ -7,9 +7,18 @@ from pydantic import BaseModel
 from typing_extensions import Self
 
 from llm_cli.tools.budget import Budget
-from llm_cli.constants import CONFIG_FILE, DEFAULT_MODEL, DEFAULT_TEMPERATURE, DEFAULT_HISTORY_STORAGE_FORMAT, \
-    HistoryStorageFormat, \
-    DEFAULT_EMBEDDING_MODEL, DEFAULT_EMBEDDING_DIMENSION, DEFAULT_MAX_TOKENS, DEFAULT_SHOW_SPINNER, DEFAULT_MULTILINE
+from llm_cli.constants import (
+    CONFIG_FILE,
+    DEFAULT_MODEL,
+    DEFAULT_TEMPERATURE,
+    DEFAULT_HISTORY_STORAGE_FORMAT,
+    HistoryStorageFormat,
+    DEFAULT_EMBEDDING_MODEL,
+    DEFAULT_EMBEDDING_DIMENSION,
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_SHOW_SPINNER,
+    DEFAULT_MULTILINE,
+)
 from llm_cli.tools.model import Model
 from llm_cli.tools.provider import Provider
 
@@ -19,8 +28,8 @@ class HistoryConf(BaseModel):
         default=False,
         metadata={
             "description": "A file name or True. If a file name, will save history under HISTORY_DIR under that file name. "
-                           "If True, will generate a new file name based on current timestamp."
-                           "If False, history will be disabled."
+            "If True, will generate a new file name based on current timestamp."
+            "If False, history will be disabled."
         },
     )
     load_from: str | None = field(

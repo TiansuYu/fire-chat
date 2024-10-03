@@ -46,34 +46,29 @@ def save_history_if_apply(chat: LLMChat, history_conf: HistoryConf):
 
 @app.command()
 def main(
-        # provider configs
-        provider: Annotated[
-            str | None, typer.Option(help="Providers to use")] = None,
-        provider_api_key: Annotated[str | None, typer.Option(help="The API key for the provider to use")] = None,
-        provider_proxy_url: Annotated[str | None, typer.Option(help="The proxy URL for the provider to use")] = None,
-
-        # model configs
-        model: Annotated[str | None, typer.Option(help="Model to use")] = None,
-        temperature: Annotated[float | None, typer.Option(help="Model temperature")] = None,
-        embedding_model: Annotated[str | None, typer.Option(help="Embedding model")] = None,
-        embedding_dimension: Annotated[int | None, typer.Option(help="Embedding dimension")] = None,
-        max_tokens: Annotated[int | None, typer.Option(help="Max tokens")] = None,
-
-        # ui configs
-        show_spinner: Annotated[bool | None, typer.Option(help="Show spinner")] = None,
-        multiline: Annotated[bool | None, typer.Option(help="If accepts multilines in prompt input")] = None,
-        use_markdown: Annotated[bool | None, typer.Option(help="If use markdown format in console output")] = None,
-
-        # budget configs
-        budget_enabled: Annotated[bool | None, typer.Option(help="Enable budget")] = None,
-        budget_duration: Annotated[str | None, typer.Option(help="Budget duration")] = None,
-        budget_amount: Annotated[float | None, typer.Option(help="Budget amount")] = None,
-        budget_user: Annotated[str | None, typer.Option(help="Budget user")] = None,
-
-        # history configs
-        storage_format: Annotated[str | None, typer.Option(help="Storage format")] = None,
-        load_history_from: Annotated[str | None, typer.Option(help="Load history from")] = None,
-        save_history: Annotated[str | None, typer.Option(help="Save history")] = None,
+    # provider configs
+    provider: Annotated[str | None, typer.Option(help="Providers to use")] = None,
+    provider_api_key: Annotated[str | None, typer.Option(help="The API key for the provider to use")] = None,
+    provider_proxy_url: Annotated[str | None, typer.Option(help="The proxy URL for the provider to use")] = None,
+    # model configs
+    model: Annotated[str | None, typer.Option(help="Model to use")] = None,
+    temperature: Annotated[float | None, typer.Option(help="Model temperature")] = None,
+    embedding_model: Annotated[str | None, typer.Option(help="Embedding model")] = None,
+    embedding_dimension: Annotated[int | None, typer.Option(help="Embedding dimension")] = None,
+    max_tokens: Annotated[int | None, typer.Option(help="Max tokens")] = None,
+    # ui configs
+    show_spinner: Annotated[bool | None, typer.Option(help="Show spinner")] = None,
+    multiline: Annotated[bool | None, typer.Option(help="If accepts multilines in prompt input")] = None,
+    use_markdown: Annotated[bool | None, typer.Option(help="If use markdown format in console output")] = None,
+    # budget configs
+    budget_enabled: Annotated[bool | None, typer.Option(help="Enable budget")] = None,
+    budget_duration: Annotated[str | None, typer.Option(help="Budget duration")] = None,
+    budget_amount: Annotated[float | None, typer.Option(help="Budget amount")] = None,
+    budget_user: Annotated[str | None, typer.Option(help="Budget user")] = None,
+    # history configs
+    storage_format: Annotated[str | None, typer.Option(help="Storage format")] = None,
+    load_history_from: Annotated[str | None, typer.Option(help="Load history from")] = None,
+    save_history: Annotated[str | None, typer.Option(help="Save history")] = None,
 ) -> None:
     # loading configs from config file
     config = Config.load()
