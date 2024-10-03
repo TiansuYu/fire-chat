@@ -19,8 +19,8 @@ class HistoryConf(BaseModel):
         default=False,
         metadata={
             "description": "A file name or True. If a file name, will save history under HISTORY_DIR under that file name. "
-                           "If True, will generate a new file name based on current timestamp."
-                           "If False, history will be disabled."
+            "If True, will generate a new file name based on current timestamp."
+            "If False, history will be disabled."
         },
     )
     load_from: str | None = field(
