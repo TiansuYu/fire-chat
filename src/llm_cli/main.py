@@ -2,16 +2,14 @@ import warnings
 from typing import Annotated
 
 import typer
+from prompt_toolkit import PromptSession
 from rich.text import Text
-from typer_config import use_yaml_config
-from typer_config.decorators import dump_yaml_config
 
-from llm_cli.budget import Budget
 from llm_cli.chat import LLMChat
-from llm_cli.config import Config, Provider, DEFAULT_MODEL, DEFAULT_TEMPERATURE, DEFAULT_STORAGE_FORMAT, \
-    DEFAULT_EMBEDDING_MODEL, DEFAULT_EMBEDDING_DIMENSION, HistoryConf, StorageFormat
-from llm_cli.constants import CONFIG_FILE
+from llm_cli.config import Config, Provider, HistoryConf
+from llm_cli.tools.history import History
 from llm_cli.ui import console, ConsoleStyle
+from llm_cli.ui import create_keybindings, PROMPT_STYLE
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -20,7 +18,7 @@ app = typer.Typer()
 SPINNER = "bouncingBar"
 
 
-def process_prompt(chat: LLMChat, prompt: str, index: int, use_markdown: bool, use_spinner: bool) -> None:
+def process_prompt(chat: LLMChat, prompt: str, index: int, *, use_markdown: bool, use_spinner: bool) -> None:
     """Process the prompt."""
     console.rule()
     if use_spinner:
@@ -40,58 +38,96 @@ def print_header(config: Config):
     console.print()
 
 
+def save_history_if_apply(chat: LLMChat, history_conf: HistoryConf):
+    if save := history_conf.save:
+        save_to = None if isinstance(save, bool) else save
+        chat.history.save(save_to)
+
+
 @app.command()
-@use_yaml_config(default_value=str(CONFIG_FILE))
-@dump_yaml_config(str(CONFIG_FILE))
 def main(
-        providers: Annotated[
-            list[Provider], typer.Option(help="Providers to use")] = [Provider()],
-        model: Annotated[str, typer.Option(help="Model to use")] = DEFAULT_MODEL,
-        temperature: Annotated[float, typer.Option(help="Model temperature")] = DEFAULT_TEMPERATURE,
-        storage_format: Annotated[StorageFormat, typer.Option(help="Storage format")] = DEFAULT_STORAGE_FORMAT,
-        embedding_model: Annotated[str, typer.Option(help="Embedding model")] = DEFAULT_EMBEDDING_MODEL,
-        embedding_dimension: Annotated[int, typer.Option(help="Embedding dimension")] = DEFAULT_EMBEDDING_DIMENSION,
-        show_spinner: Annotated[bool, typer.Option(help="Show spinner")] = True,
-        multiline: Annotated[bool, typer.Option(help="If accepts multilines in prompt input")] = False,
-        use_markdown: Annotated[bool, typer.Option(help="If use markdown format in console output")] = True,
-        max_tokens: Annotated[int, typer.Option(help="Max tokens")] = 10 ** 9,
-        budget: Annotated[Budget, typer.Option(help="Budget configuration")] = Budget(),
-        history: Annotated[HistoryConf, typer.Option(help="History configuration")] = HistoryConf(),
+        # provider configs
+        provider: Annotated[
+            str | None, typer.Option(help="Providers to use")] = None,
+        provider_api_key: Annotated[str | None, typer.Option(help="The API key for the provider to use")] = None,
+        provider_proxy_url: Annotated[str | None, typer.Option(help="The proxy URL for the provider to use")] = None,
+
+        # model configs
+        model: Annotated[str | None, typer.Option(help="Model to use")] = None,
+        temperature: Annotated[float | None, typer.Option(help="Model temperature")] = None,
+        embedding_model: Annotated[str | None, typer.Option(help="Embedding model")] = None,
+        embedding_dimension: Annotated[int | None, typer.Option(help="Embedding dimension")] = None,
+        max_tokens: Annotated[int | None, typer.Option(help="Max tokens")] = None,
+
+        # ui configs
+        show_spinner: Annotated[bool | None, typer.Option(help="Show spinner")] = None,
+        multiline: Annotated[bool | None, typer.Option(help="If accepts multilines in prompt input")] = None,
+        use_markdown: Annotated[bool | None, typer.Option(help="If use markdown format in console output")] = None,
+
+        # budget configs
+        budget_enabled: Annotated[bool | None, typer.Option(help="Enable budget")] = None,
+        budget_duration: Annotated[str | None, typer.Option(help="Budget duration")] = None,
+        budget_amount: Annotated[float | None, typer.Option(help="Budget amount")] = None,
+        budget_user: Annotated[str | None, typer.Option(help="Budget user")] = None,
+
+        # history configs
+        storage_format: Annotated[str | None, typer.Option(help="Storage format")] = None,
+        load_history_from: Annotated[str | None, typer.Option(help="Load history from")] = None,
+        save_history: Annotated[str | None, typer.Option(help="Save history")] = None,
 ) -> None:
-    config = Config(
-        providers=providers,
-        model=model,
-        temperature=temperature,
-        storage_format=storage_format,
-        embedding_model=embedding_model,
-        embedding_dimension=embedding_dimension,
-        show_spinner=show_spinner,
-        multiline=multiline,
-        use_markdown=use_markdown,
-        max_tokens=max_tokens,
-        budget=budget,
-        history=history
-    )
-    typer.echo(config.model_dump())
-    # session = PromptSession(key_bindings=create_keybindings(multiline))
-    # print_header(config)
-    # chat = LLMChat(config=config, history=History.load(config.history.load_from))
-    # try:
-    #     index = 1
-    #     while True:
-    #         prompt = session.prompt(f"user [{index}]: ", style=PROMPT_STYLE)
-    #         process_prompt(chat, prompt, index, use_markdown, show_spinner)
-    #         index += 1
-    # except KeyboardInterrupt:
-    #     console.print()
-    #     console.print("Goodbye!", style=ConsoleStyle.bold_green)
-    # finally:
-    #     if config.budget.is_on:
-    #         config.budget.display_expense()
-    #         config.budget.save()
-    #     if save := config.history.save:
-    #         save_to = None if isinstance(save, bool) else save
-    #         chat.history.save(save_to)
+    # loading configs from config file
+    config = Config.load()
+
+    # update configs according to CLI options
+    if provider is not None:
+        config.add_or_update_provider(Provider(name=provider, api_key=provider_api_key, proxy_url=provider_proxy_url))
+    if model is not None:
+        config.model = model
+    if temperature is not None:
+        config.temperature = temperature
+    if embedding_model is not None:
+        config.embedding_model = embedding_model
+    if embedding_dimension is not None:
+        config.embedding_dimension = embedding_dimension
+    if max_tokens is not None:
+        config.max_tokens = max_tokens
+    if show_spinner is not None:
+        config.show_spinner = show_spinner
+    if multiline is not None:
+        config.multiline = multiline
+    if use_markdown is not None:
+        config.use_markdown = use_markdown
+    if budget_enabled:
+        config.budget.enabled = True
+        if budget_user is not None:
+            config.budget.user = budget_user
+        if budget_duration is not None:
+            config.budget.duration = budget_duration
+        if budget_amount is not None:
+            config.budget.amount = budget_amount
+    if storage_format is not None:
+        config.history.storage_format = storage_format
+    if load_history_from is not None:
+        config.history.load_from = load_history_from
+    if save_history is not None:
+        config.history.save = save_history
+
+    # start prompt session
+    session = PromptSession(key_bindings=create_keybindings(config.multiline))
+    print_header(config)
+    chat = LLMChat(config=config, history=History.load(config.history.load_from))
+    try:
+        index = 1
+        while True:
+            prompt = session.prompt(f"user [{index}]: ", style=PROMPT_STYLE)
+            process_prompt(chat, prompt, index, use_markdown=config.use_markdown, use_spinner=config.show_spinner)
+            index += 1
+    except KeyboardInterrupt:
+        console.print()
+        console.print("Goodbye!", style=ConsoleStyle.bold_green)
+    finally:
+        config.save()
+        save_history_if_apply(chat, config.history)
 
 
 if __name__ == "__main__":

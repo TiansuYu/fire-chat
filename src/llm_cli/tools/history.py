@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 
-class History(BaseModel, validate_default=True):
+class History(BaseModel, validate_default=True, validate_assignment=True):
     model: Model
     messages: Messages = Messages()
     timestamp: datetime = Field(default_factory=datetime.now)

@@ -3,7 +3,7 @@ from pydantic import BaseModel, model_validator
 from rich.markdown import Markdown
 
 from llm_cli.config import Config
-from llm_cli.history import History
+from llm_cli.tools.history import History
 from llm_cli.message import Messages, Message
 
 SYSTEM_PROMPT = ("Always use code blocks with the appropriate language tags. "

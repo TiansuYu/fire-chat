@@ -1,29 +1,23 @@
 import json
 from collections import defaultdict
-from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 
 import fsspec
 from litellm import BudgetManager
 from litellm.types.utils import ModelResponse
+from pydantic import BaseModel
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
-from typing_extensions import override
+from typing_extensions import override, Literal
 
 from llm_cli.constants import CONFIG_DIR
-from llm_cli.str_enum import StrEnum
 from llm_cli.ui import console, ConsoleStyle
 
 BUDGET_FILE = CONFIG_DIR / "user_cost.json"
 
-
-class Duration(StrEnum):
-    daily = "daily"
-    weekly = "weekly"
-    monthly = "monthly"
-    yearly = "yearly"
+Duration = Literal["daily", "weekly", "monthly", "yearly"]
 
 
 class CliBudgetManager(BudgetManager):
@@ -49,8 +43,7 @@ class CliBudgetManager(BudgetManager):
         self.user_dict[user]["total_budget"] = amount
 
 
-@dataclass
-class Budget:
+class Budget(BaseModel, validate_assignment=True):
     enabled: bool = False
     amount: float = 10.0
     duration: Duration = "monthly"
