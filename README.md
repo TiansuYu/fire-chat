@@ -8,36 +8,16 @@ chat with these models, manage budgets, and handle API keys efficiently.
 
 ## Configuration
 
-The configuration is managed through a `$HOME/.config/llm-cli/config.yaml` file. The first time you run the CLI run, it
-will generate this with default values for you (given that you have provided a correct model, provider and API key).
-
-```yaml
-providers:
-  - api_key: abc # change to your key
-    name: openai
-  - api_key: abc # change to your key
-    name: anthropic
-model: claude-3-5-sonnet-20240620
-temperature: 0.1
-markdown: true
-easy_copy: true
-json_mode: false
-use_proxy: false
-multiline: false
-storage_format: markdown
-embedding_model: text-embedding-ada-002
-embedding_dimension: 1536
-show_spinner: true
-```
+The configuration is managed through a `$HOME/.config/llm-cli/config.yaml` file. The first time you run the CLI run.
+You can copy paste the starting config file [config.yaml](examples/config.yaml) to the location, adds your API key,
+and quick start the application `llm-cli`.
 
 ## Installation and Usage
-
-Only in testing phase, not published yet!
 
 1. **Install the CLI**:
 
     ```shell
-    uv install
+    pip install --user llm-cli # or pipx install llm-cli # requires python 3.10+
     ```
 
 2. **Configure the CLI**:
@@ -47,16 +27,16 @@ Only in testing phase, not published yet!
 3. **Run the CLI**:
 
     ```shell
-    uv run llm-cli
+    llm-cli
     ```
 
    or run with arguments (overriding config yaml file)
 
     ```shell
-    uv run llm-cli model=claude-3-5-sonnet-20240620 temperature=0.1
+    llm-cli --model=gpt-4o
    ```
 
-   for full list of configs, see [config.py](src/llm_cli/config.py).
+   for full list of configs, see [main.py](src/llm_cli/main.py).
 
 4. **Exit**:
    To exit the CLI, `Ctrl+C`.

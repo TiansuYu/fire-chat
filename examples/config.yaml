@@ -1,21 +1,6 @@
 providers:
-  - api_key: abc
+  - api_key: <your api key>
     name: openai
-  - api_key: abc
+  - api_key: <your api key>
     name: anthropic
 model: gpt-4o
-temperature: 0.1
-markdown: true
-easy_copy: true
-json_mode: false
-use_proxy: false
-multiline: false
-storage_format: markdown
-embedding_model: text-embedding-ada-002
-embedding_dimension: 1536
-show_spinner: true
-budget:
-  enabled: false
-  amount: 10.0
-  duration: monthly
-  user: default_user
