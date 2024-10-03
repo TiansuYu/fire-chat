@@ -6,8 +6,10 @@ from llm_cli.config import Config
 from llm_cli.tools.history import History
 from llm_cli.message import Messages, Message
 
-SYSTEM_PROMPT = ("Always use code blocks with the appropriate language tags. "
-                 "If asked for a table always format it using Markdown syntax.")
+SYSTEM_PROMPT = (
+    "Always use code blocks with the appropriate language tags. "
+    "If asked for a table always format it using Markdown syntax."
+)
 
 SYSTEM_MESSAGE = Message(role="system", content=SYSTEM_PROMPT)
 
