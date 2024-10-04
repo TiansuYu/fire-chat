@@ -4,7 +4,7 @@ from typing import Literal
 
 PROJECT_NAME = "llm-cli"
 
-CONFIG_DIR = Path.home() / ".config" / "llm-cli"
+CONFIG_DIR = Path.home() / ".config" / "fire-chat"
 CONFIG_FILE = CONFIG_DIR / "config.yaml"
 
 if not CONFIG_DIR.exists():

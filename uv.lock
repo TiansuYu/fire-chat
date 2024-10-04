@@ -275,6 +275,49 @@ wheels = [
 ]
 
 [[package]]
+name = "fire-chat"
+version = "0.0.4"
+source = { editable = "." }
+dependencies = [
+    { name = "fsspec" },
+    { name = "importlib-metadata" },
+    { name = "litellm" },
+    { name = "prompt-toolkit" },
+    { name = "pydantic" },
+    { name = "pydantic-collections" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "typer" },
+    { name = "typer-config" },
+    { name = "typing-extensions" },
+    { name = "xdg-base-dirs" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pre-commit" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fsspec", specifier = ">=2024.6.1" },
+    { name = "importlib-metadata", specifier = ">=8.2.0" },
+    { name = "litellm", specifier = ">=1.44.5" },
+    { name = "prompt-toolkit", specifier = ">=3.0.47" },
+    { name = "pydantic", specifier = ">=2.8.2" },
+    { name = "pydantic-collections", specifier = ">=0.6.0" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "rich", specifier = ">=13.7.1" },
+    { name = "typer", specifier = ">=0.12.5" },
+    { name = "typer-config", specifier = ">=1.4.0" },
+    { name = "typing-extensions", specifier = ">=4.12.2" },
+    { name = "xdg-base-dirs", specifier = ">=6.0.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pre-commit" }]
+
+[[package]]
 name = "frozenlist"
 version = "1.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -527,49 +570,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/f0/de/eb77b4e70eecf9812
 wheels = [
     { url = "https://files.pythonhosted.org/packages/40/6d/5c11494476617364a48da1f9254b5a6c3e6ed5b07d456b3dcafe9e01a988/litellm-1.44.15-py3-none-any.whl", hash = "sha256:6b818bb9b974e72dd731fedb0ef0c2164bc3239fc879428b054f4192ad32115a", size = 8623768 },
 ]
-
-[[package]]
-name = "llm-cli"
-version = "0.0.1"
-source = { editable = "." }
-dependencies = [
-    { name = "fsspec" },
-    { name = "importlib-metadata" },
-    { name = "litellm" },
-    { name = "prompt-toolkit" },
-    { name = "pydantic" },
-    { name = "pydantic-collections" },
-    { name = "pyyaml" },
-    { name = "rich" },
-    { name = "typer" },
-    { name = "typer-config" },
-    { name = "typing-extensions" },
-    { name = "xdg-base-dirs" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pre-commit" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fsspec", specifier = ">=2024.6.1" },
-    { name = "importlib-metadata", specifier = ">=8.2.0" },
-    { name = "litellm", specifier = ">=1.44.5" },
-    { name = "prompt-toolkit", specifier = ">=3.0.47" },
-    { name = "pydantic", specifier = ">=2.8.2" },
-    { name = "pydantic-collections", specifier = ">=0.6.0" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "rich", specifier = ">=13.7.1" },
-    { name = "typer", specifier = ">=0.12.5" },
-    { name = "typer-config", specifier = ">=1.4.0" },
-    { name = "typing-extensions", specifier = ">=4.12.2" },
-    { name = "xdg-base-dirs", specifier = ">=6.0.1" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pre-commit" }]
 
 [[package]]
 name = "markdown-it-py"
