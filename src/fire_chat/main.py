@@ -107,6 +107,8 @@ def main(
     if save_history is not None:
         config.history.save = save_history
 
+    config.validate_api_key()
+
     # start prompt session
     session = PromptSession(key_bindings=create_keybindings(config.multiline))
     print_header(config)
@@ -120,6 +122,8 @@ def main(
     except KeyboardInterrupt:
         console.print()
         console.print("Goodbye!", style=ConsoleStyle.bold_green)
+    except:  # noqa: E722
+        console.print_exception(show_locals=False, max_frames=10)
     finally:
         config.save()
         save_history_if_apply(chat, config.history)
