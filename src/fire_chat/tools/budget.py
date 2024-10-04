@@ -12,8 +12,8 @@ from rich.table import Table
 from rich.text import Text
 from typing_extensions import override, Literal
 
-from llm_cli.constants import CONFIG_DIR
-from llm_cli.ui import console, ConsoleStyle
+from fire_chat.constants import CONFIG_DIR
+from fire_chat.ui import console, ConsoleStyle
 
 BUDGET_FILE = CONFIG_DIR / "user_cost.json"
 

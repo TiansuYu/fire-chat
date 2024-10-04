@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from dataclasses import field
 
+import litellm
 import yaml
+from prompt_toolkit import PromptSession
+from prompt_toolkit.key_binding import KeyBindings
 from pydantic import BaseModel
 from typing_extensions import Self
 
-from llm_cli.tools.budget import Budget
-from llm_cli.constants import (
+from fire_chat.constants import (
     CONFIG_FILE,
     DEFAULT_MODEL,
     DEFAULT_TEMPERATURE,
@@ -19,8 +21,10 @@ from llm_cli.constants import (
     DEFAULT_SHOW_SPINNER,
     DEFAULT_MULTILINE,
 )
-from llm_cli.tools.model import Model
-from llm_cli.tools.provider import Provider
+from fire_chat.tools.budget import Budget
+from fire_chat.tools.model import Model
+from fire_chat.tools.provider import Provider
+from fire_chat.ui import console, ConsoleStyle
 
 
 class HistoryConf(BaseModel):
@@ -71,8 +75,28 @@ class Config(BaseModel, validate_assignment=True):
     def add_or_update_provider(self, provider: Provider) -> None:
         self.providers = _add_or_update_provider(self.providers, provider)
 
-    def get_api_key(self) -> str:
+    def get_suitable_api_key(self) -> str:
         return self.suitable_provider.api_key
+
+    def update_suitable_api_key(self, api_key: str) -> None:
+        self.suitable_provider.api_key = api_key
+
+    def validate_api_key(self):
+        session = PromptSession(key_bindings=KeyBindings())
+        updated = False
+        while not litellm.check_valid_key(self.model, self.get_suitable_api_key()):
+            console.print(
+                f"Invalid API key '{_mask_key(self.get_suitable_api_key())}'!",
+                style=ConsoleStyle.bold_red,
+            )
+            self.update_suitable_api_key(session.prompt("Enter API key: "))
+            updated = True
+        if updated:
+            console.print(
+                f"API key for '{self.suitable_provider.name}' successfully updated: "
+                f"'{_mask_key(self.get_suitable_api_key())}'!.",
+                style=ConsoleStyle.bold_green,
+            )
 
     @classmethod
     def load(cls) -> Self:
@@ -103,3 +127,13 @@ def _filter_provider_by_name(providers: list[Provider], name: str):
         if p.name == name:
             return p
     raise ValueError(f"No provider found with name '{name}'")
+
+
+def _mask_key(key: str) -> str:
+    """
+    If the key length is less than or equal to 6, mask the entire key.
+    Otherwise, mask all characters except the first 3 and last 3.
+    """
+    if len(key) <= 6:
+        return "*" * len(key)
+    return key[:3] + "*" * (len(key) - 6) + key[-3:]

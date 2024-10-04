@@ -6,10 +6,10 @@ import fsspec
 from pydantic import Field, BaseModel
 from typing_extensions import Self
 
-from llm_cli.config import Model
-from llm_cli.constants import CONFIG_DIR
-from llm_cli.message import Messages
-from llm_cli.ui import ConsoleStyle, console
+from fire_chat.config import Model
+from fire_chat.constants import CONFIG_DIR
+from fire_chat.message import Messages
+from fire_chat.ui import ConsoleStyle, console
 
 HISTORY_DIR = CONFIG_DIR / "session_history"
 

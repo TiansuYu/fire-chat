@@ -6,7 +6,7 @@ from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.key_binding import KeyBindings
 from pydantic import AfterValidator
 
-from llm_cli.ui import console, ConsoleStyle
+from fire_chat.ui import console, ConsoleStyle
 
 
 def validate_model(model: str) -> str:

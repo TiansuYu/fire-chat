@@ -6,8 +6,8 @@ from typing_extensions import Self
 
 from pydantic import BaseModel, field_validator
 
-from llm_cli.constants import DEFAULT_PROVIDER
-from llm_cli.ui import console, ConsoleStyle
+from fire_chat.constants import DEFAULT_PROVIDER
+from fire_chat.ui import console, ConsoleStyle
 
 
 class Provider(BaseModel, validate_default=True, validate_assignment=True):

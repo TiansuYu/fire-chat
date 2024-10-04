@@ -1,6 +1,6 @@
 [project]
-name = "llm-cli"
-version = "0.0.1"
+name = "fire-chat"
+version = "0.0.4"
 authors = [
     { name = "Tiansu Yu", email = "tiansu.yu@icloud.com" },
     { name = "Marco Lardera", email = "larderamarco@hotmail.com" },
@@ -50,7 +50,7 @@ Issues = "https://github.com/TiansuYu/llm-cli/issues"
 Repository = "https://github.com/TiansuYu/llm-cli"
 
 [project.scripts]
-llm-cli = "llm_cli.main:app"
+fire-chat = "fire_chat.main:app"
 
 [build-system]
 requires = ["hatchling"]

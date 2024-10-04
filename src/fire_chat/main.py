@@ -5,11 +5,11 @@ import typer
 from prompt_toolkit import PromptSession
 from rich.text import Text
 
-from llm_cli.chat import LLMChat
-from llm_cli.config import Config, Provider, HistoryConf
-from llm_cli.tools.history import History
-from llm_cli.ui import console, ConsoleStyle
-from llm_cli.ui import create_keybindings, PROMPT_STYLE
+from fire_chat.chat import LLMChat
+from fire_chat.config import Config, Provider, HistoryConf
+from fire_chat.tools.history import History
+from fire_chat.ui import console, ConsoleStyle
+from fire_chat.ui import create_keybindings, PROMPT_STYLE
 
 warnings.filterwarnings("ignore", category=UserWarning)
 

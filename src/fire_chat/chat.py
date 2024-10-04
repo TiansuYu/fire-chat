@@ -2,9 +2,9 @@ import litellm
 from pydantic import BaseModel, model_validator
 from rich.markdown import Markdown
 
-from llm_cli.config import Config
-from llm_cli.tools.history import History
-from llm_cli.message import Messages, Message
+from fire_chat.config import Config
+from fire_chat.tools.history import History
+from fire_chat.message import Messages, Message
 
 SYSTEM_PROMPT = (
     "Always use code blocks with the appropriate language tags. "
@@ -40,7 +40,7 @@ class LLMChat(BaseModel):
 
         response = litellm.completion(
             model=self.config.model,
-            api_key=self.config.get_api_key(),
+            api_key=self.config.get_suitable_api_key(),
             temperature=self.config.temperature,
             messages=self.messages.model_dump(),  # noqa
             base_url=self.config.suitable_provider.proxy_url if self.config.suitable_provider.proxy_url else None,
