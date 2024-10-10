@@ -30,10 +30,3 @@ jobs:
         run: make build-and-publish
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
-
-      - name: Create GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          tag=$(git describe --tags)
-          gh release create "$tag" --title "Release $tag" --notes "Automated release for version $tag"
