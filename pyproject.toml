@@ -1,6 +1,6 @@
 [project]
 name = "fire-chat"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
     { name = "Tiansu Yu", email = "tiansu.yu@icloud.com" },
     { name = "Marco Lardera", email = "larderamarco@hotmail.com" },
@@ -40,9 +40,11 @@ dependencies = [
     "typer-config>=1.4.0",
 ]
 
-
 [tool.uv]
-dev-dependencies = ["pre-commit"]
+dev-dependencies = [
+    "pre-commit",
+    "toml>=0.10.2",
+]
 
 [project.urls]
 Homepage = "https://github.com/TiansuYu/llm-cli"

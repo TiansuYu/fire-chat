@@ -2,9 +2,11 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-PROJECT_NAME = "llm-cli"
+from yaml import Dumper
 
-CONFIG_DIR = Path.home() / ".config" / "fire-chat"
+PROJECT_NAME = "fire-chat"
+
+CONFIG_DIR = Path.home() / ".config" / PROJECT_NAME
 CONFIG_FILE = CONFIG_DIR / "config.yaml"
 
 if not CONFIG_DIR.exists():
@@ -28,3 +30,8 @@ DEFAULT_SHOW_SPINNER = True
 DEFAULT_MULTILINE = False
 DEFAULT_USE_MARKDOWN = True
 DEFAULT_MAX_TOKENS = 4096
+
+
+class CustomYamlDumper(Dumper):
+    def increase_indent(self, flow=False, *args, **kwargs):
+        return super().increase_indent(flow=flow, indentless=False)
