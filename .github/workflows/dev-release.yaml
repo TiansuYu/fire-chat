@@ -37,6 +37,8 @@ jobs:
   dev-release:
     needs: ci
     runs-on: ubuntu-latest
+    environment:
+      name: release
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -61,3 +63,5 @@ jobs:
 
       - name: Release dev version
         run: uv build && uv publish
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
