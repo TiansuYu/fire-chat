@@ -6,14 +6,18 @@ from prompt_toolkit import PromptSession
 from rich.text import Text
 
 from fire_chat.chat import LLMChat
-from fire_chat.config import Config, Provider, HistoryConf
+from fire_chat.config import Config, Provider
+from fire_chat.constants import PROJECT_NAME
 from fire_chat.tools.history import History
 from fire_chat.ui import console, ConsoleStyle
 from fire_chat.ui import create_keybindings, PROMPT_STYLE
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-app = typer.Typer()
+app = typer.Typer(
+    help="Your CLI tool to chat with LLM models.",
+    pretty_exceptions_show_locals=False,
+)
 
 SPINNER = "bouncingBar"
 
@@ -32,16 +36,10 @@ def process_prompt(chat: LLMChat, prompt: str, index: int, *, use_markdown: bool
 
 def print_header(config: Config):
     console.print()
-    console.print(Text("Welcome to ChatGPT CLI!", style=ConsoleStyle.bold_yellow))
+    console.print(Text(f"Welcome to {PROJECT_NAME}!", style=ConsoleStyle.bold_yellow))
     console.print(Text(f"Provider: {config.suitable_provider.name}", style=ConsoleStyle.bold_yellow))
     console.print(Text(f"Model: {config.model}", style=ConsoleStyle.bold_yellow))
     console.print()
-
-
-def save_history_if_apply(chat: LLMChat, history_conf: HistoryConf):
-    if save := history_conf.save:
-        save_to = None if isinstance(save, bool) else save
-        chat.history.save(save_to)
 
 
 @app.command()
@@ -61,14 +59,15 @@ def main(
     multiline: Annotated[bool | None, typer.Option(help="If accepts multilines in prompt input")] = None,
     use_markdown: Annotated[bool | None, typer.Option(help="If use markdown format in console output")] = None,
     # budget configs
-    budget_enabled: Annotated[bool | None, typer.Option(help="Enable budget")] = None,
+    budget: Annotated[bool | None, typer.Option(help="Enable budget")] = None,
     budget_duration: Annotated[str | None, typer.Option(help="Budget duration")] = None,
     budget_amount: Annotated[float | None, typer.Option(help="Budget amount")] = None,
     budget_user: Annotated[str | None, typer.Option(help="Budget user")] = None,
     # history configs
+    history: Annotated[bool | None, typer.Option(help="Enable history")] = None,
     storage_format: Annotated[str | None, typer.Option(help="Storage format")] = None,
     load_history_from: Annotated[str | None, typer.Option(help="Load history from")] = None,
-    save_history: Annotated[str | None, typer.Option(help="Save history")] = None,
+    save_history_to: Annotated[str | None, typer.Option(help="Save history")] = None,
 ) -> None:
     # loading configs from config file
     config = Config.load()
@@ -92,7 +91,7 @@ def main(
         config.multiline = multiline
     if use_markdown is not None:
         config.use_markdown = use_markdown
-    if budget_enabled:
+    if budget:
         config.budget.enabled = True
         if budget_user is not None:
             config.budget.user = budget_user
@@ -100,19 +99,20 @@ def main(
             config.budget.duration = budget_duration
         if budget_amount is not None:
             config.budget.amount = budget_amount
-    if storage_format is not None:
-        config.history.storage_format = storage_format
-    if load_history_from is not None:
-        config.history.load_from = load_history_from
-    if save_history is not None:
-        config.history.save = save_history
+    _history = None
+    if history:
+        config.history.enabled = True
+        if storage_format is not None:
+            config.history.storage_format = storage_format
+        if load_history_from is not None:
+            _history = History.load(load_history_from)
 
     config.validate_api_key()
 
     # start prompt session
     session = PromptSession(key_bindings=create_keybindings(config.multiline))
     print_header(config)
-    chat = LLMChat(config=config, history=History.load(config.history.load_from))
+    chat = LLMChat(config=config, history=_history)
     try:
         index = 1
         while True:
@@ -126,7 +126,8 @@ def main(
         console.print_exception(show_locals=False, max_frames=10)
     finally:
         config.save()
-        save_history_if_apply(chat, config.history)
+        if config.history.enabled:
+            chat.history.save(save_history_to)
 
 
 if __name__ == "__main__":

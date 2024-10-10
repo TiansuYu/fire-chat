@@ -1,7 +1,8 @@
-name: CI
+name: Run CI on PR
 
 on:
-  - push
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   ci:

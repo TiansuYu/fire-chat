@@ -12,7 +12,7 @@ from rich.table import Table
 from rich.text import Text
 from typing_extensions import override, Literal
 
-from fire_chat.constants import CONFIG_DIR
+from fire_chat.constants import CONFIG_DIR, PROJECT_NAME
 from fire_chat.ui import console, ConsoleStyle
 
 BUDGET_FILE = CONFIG_DIR / "user_cost.json"
@@ -55,14 +55,14 @@ class Budget(BaseModel, validate_assignment=True):
 
     @cached_property
     def manager(self) -> CliBudgetManager:
-        manager = CliBudgetManager(project_name="chatgpt-cli")
+        manager = CliBudgetManager(project_name=PROJECT_NAME)
         manager.load_data()
         if self.is_on:
             if not manager.is_valid_user(self.user):
                 manager.create_budget(
                     total_budget=self.amount,
                     user=self.user,
-                    duration=self.duration.value,  # noqa: type
+                    duration=self.duration,  # noqa: type
                 )
         # make sure user budget is the latest from config
         manager.update_user_budget(amount=self.amount, user=self.user)
@@ -118,3 +118,4 @@ class Budget(BaseModel, validate_assignment=True):
 
     def save(self) -> None:
         self.manager.save_data()
+        console.print(f"Budget saved to {self.manager.cost_file_path}", style=ConsoleStyle.bold_green)

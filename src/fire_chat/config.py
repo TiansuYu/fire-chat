@@ -20,6 +20,7 @@ from fire_chat.constants import (
     DEFAULT_MAX_TOKENS,
     DEFAULT_SHOW_SPINNER,
     DEFAULT_MULTILINE,
+    CustomYamlDumper,
 )
 from fire_chat.tools.budget import Budget
 from fire_chat.tools.model import Model
@@ -28,16 +29,8 @@ from fire_chat.ui import console, ConsoleStyle
 
 
 class HistoryConf(BaseModel):
-    save: str | bool = field(
-        default=False,
-        metadata={
-            "description": "A file name or True. If a file name, will save history under HISTORY_DIR under that file name. "
-            "If True, will generate a new file name based on current timestamp."
-            "If False, history will be disabled."
-        },
-    )
-    load_from: str | None = field(
-        default=None, metadata={"description": "A file name under HISTORY_DIR to load history from."}
+    enabled: bool = field(
+        default=False, metadata={"description": "If enabled, will save history at the end of the chat."}
     )
     storage_format: HistoryStorageFormat = DEFAULT_HISTORY_STORAGE_FORMAT
 
@@ -86,7 +79,7 @@ class Config(BaseModel, validate_assignment=True):
         updated = False
         while not litellm.check_valid_key(self.model, self.get_suitable_api_key()):
             console.print(
-                f"Invalid API key '{_mask_key(self.get_suitable_api_key())}'!",
+                f"Invalid API key '{_mask_key(self.get_suitable_api_key())}' for {self.suitable_provider.name}!",
                 style=ConsoleStyle.bold_red,
             )
             self.update_suitable_api_key(session.prompt("Enter API key: "))
@@ -111,7 +104,16 @@ class Config(BaseModel, validate_assignment=True):
         if not parent_dir.exists():
             parent_dir.mkdir(parents=True)
         with open(CONFIG_FILE, "w+") as f:
-            f.write(yaml.dump(self.model_dump(exclude_none=True)))
+            f.write(
+                yaml.dump(
+                    self.model_dump(exclude_none=True),
+                    sort_keys=False,
+                    indent=2,
+                    default_flow_style=False,
+                    Dumper=CustomYamlDumper,
+                )
+            )
+            console.print(f"Config saved to {CONFIG_FILE}", style=ConsoleStyle.bold_green)
         if self.budget.is_on:
             self.budget.save()
 
