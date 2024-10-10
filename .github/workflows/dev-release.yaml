@@ -28,11 +28,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: uv sync --all-extras --dev
-
       - name: Run linting
-        run: uv run pre-commit run -a
+        run: make lint
 
   dev-release:
     needs: ci
@@ -55,13 +52,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: uv sync --all-extras --dev
-
       - name: Raise dev version
         run: uv run python ./scripts/dev_release.py
 
       - name: Release dev version
-        run: uv build && uv publish
+        run: make build-and-publish
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
