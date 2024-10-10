@@ -47,9 +47,9 @@ dev-dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/TiansuYu/llm-cli"
-Issues = "https://github.com/TiansuYu/llm-cli/issues"
-Repository = "https://github.com/TiansuYu/llm-cli"
+Homepage = "https://github.com/TiansuYu/fire-chat"
+Issues = "https://github.com/TiansuYu/fire-chat/issues"
+Repository = "https://github.com/TiansuYu/fire-chat"
 
 [project.scripts]
 fire-chat = "fire_chat.main:app"
