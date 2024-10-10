@@ -53,7 +53,6 @@ class LLMChat(BaseModel):
         # try update budget if budget is set
         if self.config.budget.is_on:
             self.config.budget.update_cost(response)
-            self.config.budget.save()
 
         # parse and return response message, update existing messages
         resp_message = Message.model_validate(response.choices[0]["message"].model_dump())

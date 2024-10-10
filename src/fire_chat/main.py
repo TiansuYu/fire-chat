@@ -127,7 +127,7 @@ def main(
     finally:
         config.save()
         if config.history.enabled:
-            chat.history.save(save_history_to)
+            chat.save_history(save_history_to)
 
 
 if __name__ == "__main__":

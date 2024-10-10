@@ -7,13 +7,19 @@ help:
 install: ## install core dependencies
 	uv sync
 
-install-all: ## install all dependencies
-	uv sync --all-extra -dev
+install-dev: ## install all dependencies
+	uv sync --all-extras --dev
+	uv run pre-commit install
 
 build: ## build the project
 	uv build
 
 publish: ## publish the project
 	uv publish
+
+lint: ## lint the project
+	uv run pre-commit run -a
+
+ci: lint ## run the CI pipeline
 
 build-and-publish: build publish ## build and publish the project
