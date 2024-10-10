@@ -60,4 +60,4 @@ jobs:
         run: uv run python ./scripts/dev_release.py
 
       - name: Release dev version
-        run: uv build && uv run
+        run: uv build && uv publish
