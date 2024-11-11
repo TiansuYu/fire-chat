@@ -63,6 +63,12 @@ class Config(BaseModel, validate_assignment=True):
             return _filter_provider_by_name(self.providers, "openai")
         if self.model.startswith("claude"):
             return _filter_provider_by_name(self.providers, "anthropic")
+        if self.model.startswith("azure"):
+            # provider name can either be set as 'azure' or 'azure/openai'
+            try:
+                return _filter_provider_by_name(self.providers, "azure")
+            except ValueError:
+                return _filter_provider_by_name(self.providers, "azure/openai")
         raise NotImplementedError(f"Model '{self.model}' not supported")
 
     def add_or_update_provider(self, provider: Provider) -> None:
@@ -77,9 +83,11 @@ class Config(BaseModel, validate_assignment=True):
     def validate_api_key(self):
         session = PromptSession(key_bindings=KeyBindings())
         updated = False
-        while not litellm.check_valid_key(self.model, self.get_suitable_api_key()):
+        while not litellm.check_valid_key(
+            model=self.model, api_key=self.get_suitable_api_key(), api_base=self.suitable_provider.proxy_url
+        ):
             console.print(
-                f"Invalid API key '{_mask_key(self.get_suitable_api_key())}' for {self.suitable_provider.name}!",
+                f"Invalid API key '{_mask_key(self.get_suitable_api_key())}' for {self.suitable_provider.name} with url '{self.suitable_provider.proxy_url}'!",
                 style=ConsoleStyle.bold_red,
             )
             self.update_suitable_api_key(session.prompt("Enter API key: "))
