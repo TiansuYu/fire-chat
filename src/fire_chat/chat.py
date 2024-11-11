@@ -40,10 +40,10 @@ class LLMChat(BaseModel):
 
         response = litellm.completion(
             model=self.config.model,
+            api_base=self.config.suitable_provider.proxy_url if self.config.suitable_provider.proxy_url else None,
             api_key=self.config.get_suitable_api_key(),
             temperature=self.config.temperature,
-            messages=self.messages.model_dump(),  # noqa
-            base_url=self.config.suitable_provider.proxy_url if self.config.suitable_provider.proxy_url else None,
+            messages=self.messages.model_dump(exclude_none=True),  # noqa
         )
 
         # validate at least one choice exists

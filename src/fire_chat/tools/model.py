@@ -11,6 +11,10 @@ from fire_chat.ui import console, ConsoleStyle
 
 def validate_model(model: str) -> str:
     """If model not in LLMLite model list, prompt users to input a model."""
+    console.print(f"Validating model '{model}'...", style=ConsoleStyle.bold_green)
+    if model.startswith("azure"):
+        # do not validate azure models
+        return model
     session = PromptSession(key_bindings=KeyBindings())
     updated = False
     while model not in model_list:

@@ -3,4 +3,7 @@ providers:
     name: openai
   - api_key: <your api key>
     name: anthropic
+  - api_key: <your api key>
+    name: azure # or azure/openai
+    # in such case, the model name has to be azure/gpt-4o or azure/<your deployment name>
 model: gpt-4o
